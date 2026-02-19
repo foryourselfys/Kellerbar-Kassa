@@ -110,73 +110,155 @@ html, body {
 .tab-content.active { display: block; }
 
 /* ══════════════════════════════════════
-   DESIGN THEMES
-   Applied via data-theme on <body>
+   THEMES — each with its own identity
+   Not just color filters — full personality
    ══════════════════════════════════════ */
 
-/* Theme: Neon Purple */
-body[data-theme="neon"] {
-  --bg:         #0d0d1a;
-  --bg2:        #15152b;
-  --bg3:        #1e1e38;
-  --border:     #2e2e52;
-  --accent:     #c084fc;
-  --green:      #4ade80;
-  --red:        #f87171;
-  --text:       #f0f0ff;
-  --text-muted: #7070aa;
+/* Extra theme variables used in surface treatments */
+:root {
+  --card-bg:      var(--bg2);
+  --card-border:  var(--border);
+  --card-shadow:  none;
+  --body-bg:      var(--bg);
+  --accent-glow:  none;
+  --btn-primary-bg: var(--accent);
+  --btn-primary-color: #000;
+  --surface-radius: 16px;
 }
 
-/* Theme: Emerald */
-body[data-theme="emerald"] {
-  --bg:         #051a0f;
-  --bg2:        #0a2318;
-  --bg3:        #112e20;
-  --border:     #1a4530;
-  --accent:     #34d399;
-  --green:      #6ee7b7;
-  --red:        #f87171;
-  --text:       #ecfdf5;
-  --text-muted: #5a8a70;
-}
-
-/* Theme: Sunrise */
-body[data-theme="sunrise"] {
-  --bg:         #1a0a00;
-  --bg2:        #241200;
-  --bg3:        #301a00;
-  --border:     #4a2800;
-  --accent:     #fb923c;
-  --green:      #4ade80;
-  --red:        #f87171;
-  --text:       #fff7ed;
-  --text-muted: #8a6040;
-}
-
-/* Theme: Light Minimal */
+/* ── LIGHT — Clean, airy, minimal ── */
 body[data-theme="light"] {
-  --bg:         #f5f5f0;
+  --bg:         #f0f0f5;
   --bg2:        #ffffff;
-  --bg3:        #ebebeb;
-  --border:     #d0d0d0;
-  --accent:     #1d4ed8;
+  --bg3:        #f5f5fa;
+  --border:     #e0e0e8;
+  --accent:     #3b82f6;
   --green:      #16a34a;
   --red:        #dc2626;
-  --text:       #111118;
-  --text-muted: #888898;
+  --text:       #18181b;
+  --text-muted: #909099;
+  --card-bg:    #ffffff;
+  --card-border: #e4e4ec;
+  --card-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 0 rgba(255,255,255,0.9) inset;
+  --accent-glow: 0 0 16px rgba(59,130,246,0.15);
+  --body-bg:    linear-gradient(160deg, #f8f8ff 0%, #ececf5 100%);
+  --btn-primary-bg: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  --btn-primary-color: #fff;
+  --surface-radius: 12px;
 }
 
-/* Theme: Ice */
-body[data-theme="ice"] {
-  --bg:         #060d1a;
-  --bg2:        #0c1728;
-  --bg3:        #132035;
-  --border:     #1e3050;
-  --accent:     #38bdf8;
-  --green:      #34d399;
-  --red:        #f87171;
-  --text:       #e0f2fe;
-  --text-muted: #5080a0;
+/* ── ICE theme removed ── */
+
+/* ── CUSTOM — User-defined colors ── */
+body[data-theme="custom"] {
+  --bg:         var(--custom-bg,       #0a0a0f);
+  --bg2:        var(--custom-bg2,      #13131c);
+  --bg3:        var(--custom-bg3,      #1c1c2a);
+  --border:     var(--custom-border,   #2a2a3d);
+  --accent:     var(--custom-accent,   #f5c842);
+  --text:       var(--custom-text,     #f0f0f5);
+  --text-muted: var(--custom-muted,    #7a7a9a);
+  --card-bg:    var(--custom-card-bg,  #13131c);
+  --card-border:var(--custom-border,   #2a2a3d);
+  --card-shadow:var(--custom-shadow,   none);
+  --accent-glow:var(--custom-glow,     none);
+  --body-bg:    var(--custom-body-bg,  #0a0a0f);
+  --btn-primary-bg: var(--custom-accent, #f5c842);
+  --btn-primary-color: var(--custom-btn-text, #000);
+  --surface-radius: 16px;
+}
+
+/* Custom picker UI */
+.custom-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.custom-picker-row:last-child { border-bottom: none; }
+.custom-picker-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.custom-picker-label small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 1px;
+}
+.color-input-wrap {
+  position: relative;
+  width: 44px; height: 44px;
+}
+.color-input-wrap input[type="color"] {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.color-swatch-display {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  pointer-events: none;
+  transition: border-color .2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.color-input-wrap:hover .color-swatch-display,
+.color-input-wrap:focus-within .color-swatch-display {
+  border-color: var(--accent);
+}
+
+
+/* ── Surface treatments applied via variables ── */
+body[data-theme] { background: var(--body-bg); }
+
+/* Cards use theme-aware gradient backgrounds */
+body[data-theme] .balance-card,
+body[data-theme] .settings-section,
+body[data-theme] .history-item,
+body[data-theme] .drink-btn,
+body[data-theme] .person-btn,
+body[data-theme] .modal {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--surface-radius);
+}
+
+/* Accent button uses theme gradient */
+body[data-theme] .btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+}
+
+/* Balance amount gets a glow in themed modes */
+body[data-theme] .balance-amount {
+  text-shadow: var(--accent-glow);
+}
+
+/* Person button border glow */
+body[data-theme] .person-btn {
+  border-color: var(--accent);
+  box-shadow: var(--accent-glow);
+}
+
+/* Accent drink prices and amounts get glow */
+body[data-theme] .drink-btn:active {
+  border-color: var(--accent);
+  box-shadow: var(--accent-glow);
+}
+
+/* Tabbar picks up theme surface */
+body[data-theme] .tabbar {
+  background: var(--card-bg);
+  border-top-color: var(--card-border);
 }
 
 /* ── DESIGN PICKER MODAL ── */
@@ -186,42 +268,50 @@ body[data-theme="ice"] {
   gap: 10px;
 }
 .theme-btn {
-  border-radius: var(--radius-sm);
-  border: 2px solid transparent;
-  padding: 14px 10px;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.08);
+  padding: 16px 10px 14px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  transition: border-color .15s, transform .1s;
+  gap: 10px;
+  transition: border-color .15s, transform .12s;
   position: relative;
   overflow: hidden;
+  min-height: 90px;
 }
-.theme-btn:active { transform: scale(.96); }
-.theme-btn.active-theme { border-color: white; }
+.theme-btn:active { transform: scale(.95); }
+.theme-btn.active-theme {
+  border-color: rgba(255,255,255,0.55);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
+}
 .theme-btn.active-theme::after {
   content: '✓';
   position: absolute;
-  top: 6px; right: 8px;
-  font-size: 13px;
-  font-weight: 800;
+  top: 7px; right: 10px;
+  font-size: 12px;
+  font-weight: 900;
   color: white;
-  text-shadow: 0 1px 4px rgba(0,0,0,.5);
+  text-shadow: 0 1px 4px rgba(0,0,0,.6);
 }
-.theme-swatch {
-  width: 44px; height: 44px;
+.theme-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.theme-dot {
+  width: 12px; height: 12px;
   border-radius: 50%;
-  border: 3px solid rgba(255,255,255,.3);
-  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,.25);
 }
 .theme-name {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .5px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .8px;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 1px 4px rgba(0,0,0,.6);
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 4px rgba(0,0,0,.7);
 }
 
 /* ── BALANCE CARD ── */
@@ -950,7 +1040,66 @@ body[data-theme="ice"] {
   <div class="modal">
     <div class="modal-title">🎨 Design wählen</div>
     <div class="theme-grid" id="theme-grid"></div>
+    <div style="margin-top:4px;font-size:11px;text-align:center;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;font-weight:700">oder eigenes Design</div>
+    <button class="btn-secondary" id="btn-open-custom-picker" style="display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px">
+      <span id="custom-preview-dots" style="display:flex;gap:5px"></span>
+      <span>🎨 Eigene Farben</span>
+    </button>
     <button class="btn-ghost" onclick="closeModal('modal-theme')">Schließen</button>
+  </div>
+</div>
+
+<!-- Custom Color Picker -->
+<div id="modal-custom-theme" class="modal-overlay" onclick="closeModalOnBg(event,'modal-custom-theme')">
+  <div class="modal">
+    <div class="modal-title">🎨 Eigene Farben</div>
+
+    <div class="custom-picker-row">
+      <div class="custom-picker-label">
+        Hintergrund
+        <small>Hauptfarbe der App</small>
+      </div>
+      <div class="color-input-wrap">
+        <input type="color" id="cp-bg" value="#0a0a0f" oninput="previewCustom()" />
+        <div class="color-swatch-display" id="cp-bg-swatch" style="background:#0a0a0f"></div>
+      </div>
+    </div>
+
+    <div class="custom-picker-row">
+      <div class="custom-picker-label">
+        Akzentfarbe
+        <small>Buttons, Preise, Highlights</small>
+      </div>
+      <div class="color-input-wrap">
+        <input type="color" id="cp-accent" value="#f5c842" oninput="previewCustom()" />
+        <div class="color-swatch-display" id="cp-accent-swatch" style="background:#f5c842"></div>
+      </div>
+    </div>
+
+    <div class="custom-picker-row">
+      <div class="custom-picker-label">
+        Kartenfarbe
+        <small>Hintergrund der Karten</small>
+      </div>
+      <div class="color-input-wrap">
+        <input type="color" id="cp-card" value="#13131c" oninput="previewCustom()" />
+        <div class="color-swatch-display" id="cp-card-swatch" style="background:#13131c"></div>
+      </div>
+    </div>
+
+    <div class="custom-picker-row">
+      <div class="custom-picker-label">
+        Textfarbe
+        <small>Haupttext</small>
+      </div>
+      <div class="color-input-wrap">
+        <input type="color" id="cp-text" value="#f0f0f5" oninput="previewCustom()" />
+        <div class="color-swatch-display" id="cp-text-swatch" style="background:#f0f0f5"></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveCustomTheme()">✓ Übernehmen</button>
+    <button class="btn-ghost" onclick="closeModal('modal-custom-theme')">Abbrechen</button>
   </div>
 </div>
 
@@ -1047,54 +1196,89 @@ const THEMES = [
   {
     id: 'default',
     name: 'Keller',
-    bg: '#0a0a0f',
-    accent: '#f5c842',
-    gradient: 'linear-gradient(135deg, #0a0a0f 0%, #1c1c2a 100%)',
-  },
-  {
-    id: 'neon',
-    name: 'Neon',
-    bg: '#0d0d1a',
-    accent: '#c084fc',
-    gradient: 'linear-gradient(135deg, #0d0d1a 0%, #1e1e38 100%)',
-  },
-  {
-    id: 'emerald',
-    name: 'Emerald',
-    bg: '#051a0f',
-    accent: '#34d399',
-    gradient: 'linear-gradient(135deg, #051a0f 0%, #112e20 100%)',
-  },
-  {
-    id: 'sunrise',
-    name: 'Sunrise',
-    bg: '#1a0a00',
-    accent: '#fb923c',
-    gradient: 'linear-gradient(135deg, #1a0a00 0%, #301a00 100%)',
+    gradient: 'linear-gradient(145deg, #13131c 0%, #0a0a0f 100%)',
+    dots: ['#f5c842', '#3ddc84', '#ff5f57'],
   },
   {
     id: 'light',
     name: 'Hell',
-    bg: '#f5f5f0',
-    accent: '#1d4ed8',
-    gradient: 'linear-gradient(135deg, #e8e8e0 0%, #ffffff 100%)',
-  },
-  {
-    id: 'ice',
-    name: 'Ice',
-    bg: '#060d1a',
-    accent: '#38bdf8',
-    gradient: 'linear-gradient(135deg, #060d1a 0%, #132035 100%)',
+    gradient: 'linear-gradient(145deg, #ffffff 0%, #e8e8f0 100%)',
+    dots: ['#3b82f6', '#16a34a', '#dc2626'],
   },
 ];
 
 let currentTheme = localStorage.getItem('kk_theme') || 'default';
 
+/* Custom theme colors stored separately */
+let customColors = JSON.parse(localStorage.getItem('kk_custom_colors') || 'null') || {
+  bg: '#0a0a0f', accent: '#f5c842', card: '#13131c', text: '#f0f0f5'
+};
+
 function applyTheme(id) {
   currentTheme = id;
   document.body.dataset.theme = id === 'default' ? '' : id;
   localStorage.setItem('kk_theme', id);
+  if (id === 'custom') applyCustomVars(customColors);
   renderThemeGrid();
+  updateCustomPreviewDots();
+}
+
+function applyCustomVars(c) {
+  const r = document.documentElement.style;
+  // derive darker shades from bg
+  const bg2 = lightenDarken(c.bg, 10);
+  const bg3 = lightenDarken(c.bg, 20);
+  const border = lightenDarken(c.bg, 35);
+  const muted = blendColors(c.text, c.bg, 0.45);
+  const shadow = hexToRgba(c.accent, 0.18);
+  const glow   = hexToRgba(c.accent, 0.25);
+  const btnText = luminance(c.accent) > 0.4 ? '#000' : '#fff';
+
+  r.setProperty('--custom-bg',       c.bg);
+  r.setProperty('--custom-bg2',      bg2);
+  r.setProperty('--custom-bg3',      bg3);
+  r.setProperty('--custom-border',   border);
+  r.setProperty('--custom-accent',   c.accent);
+  r.setProperty('--custom-text',     c.text);
+  r.setProperty('--custom-muted',    muted);
+  r.setProperty('--custom-card-bg',  c.card);
+  r.setProperty('--custom-shadow',   `0 4px 24px ${shadow}`);
+  r.setProperty('--custom-glow',     `0 0 20px ${glow}`);
+  r.setProperty('--custom-body-bg',  c.bg);
+  r.setProperty('--custom-btn-text', btnText);
+}
+
+/* Color math helpers */
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return {r,g,b};
+}
+function hexToRgba(hex, a) {
+  const {r,g,b} = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function rgbToHex(r,g,b) {
+  return '#' + [r,g,b].map(v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+}
+function lightenDarken(hex, amt) {
+  const {r,g,b} = hexToRgb(hex);
+  const lum = luminance(hex);
+  const d = lum < 0.15 ? amt : -amt; // dark bg → lighten; light bg → darken
+  return rgbToHex(r+d, g+d, b+d);
+}
+function blendColors(hex1, hex2, t) {
+  const a = hexToRgb(hex1), b2 = hexToRgb(hex2);
+  return rgbToHex(
+    a.r * t + b2.r * (1-t),
+    a.g * t + b2.g * (1-t),
+    a.b * t + b2.b * (1-t)
+  );
+}
+function luminance(hex) {
+  const {r,g,b} = hexToRgb(hex);
+  return (0.299*r + 0.587*g + 0.114*b) / 255;
 }
 
 function renderThemeGrid() {
@@ -1105,16 +1289,92 @@ function renderThemeGrid() {
     const btn = document.createElement('button');
     btn.className = 'theme-btn' + (currentTheme === t.id ? ' active-theme' : '');
     btn.style.background = t.gradient;
-    btn.innerHTML = `
-      <div class="theme-swatch" style="background:${t.accent}"></div>
-      <div class="theme-name">${t.name}</div>`;
+
+    const dots = document.createElement('div');
+    dots.className = 'theme-dots';
+    t.dots.forEach(color => {
+      const dot = document.createElement('div');
+      dot.className = 'theme-dot';
+      dot.style.background = color;
+      dot.style.boxShadow = `0 0 6px ${color}88`;
+      dots.appendChild(dot);
+    });
+
+    const name = document.createElement('div');
+    name.className = 'theme-name';
+    name.textContent = t.name;
+
+    btn.appendChild(dots);
+    btn.appendChild(name);
     btn.addEventListener('click', () => {
       applyTheme(t.id);
       showToast('🎨 ' + t.name);
     });
     grid.appendChild(btn);
   });
+  updateCustomPreviewDots();
 }
+
+function updateCustomPreviewDots() {
+  const wrap = document.getElementById('custom-preview-dots');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  [customColors.bg, customColors.accent, customColors.card, customColors.text].forEach(c => {
+    const d = document.createElement('div');
+    d.style.cssText = `width:12px;height:12px;border-radius:50%;background:${c};border:1.5px solid rgba(255,255,255,.3);box-shadow:0 0 5px ${c}99`;
+    wrap.appendChild(d);
+  });
+  // Highlight button if custom is active
+  const customBtn = document.getElementById('btn-open-custom-picker');
+  if (customBtn) {
+    customBtn.style.borderColor = currentTheme === 'custom' ? 'var(--accent)' : '';
+  }
+}
+
+function openCustomPicker() {
+  // Load saved custom colors into inputs
+  document.getElementById('cp-bg').value     = customColors.bg;
+  document.getElementById('cp-accent').value = customColors.accent;
+  document.getElementById('cp-card').value   = customColors.card;
+  document.getElementById('cp-text').value   = customColors.text;
+  updateSwatches();
+  closeModal('modal-theme');
+  openModal('modal-custom-theme');
+}
+
+function updateSwatches() {
+  ['bg','accent','card','text'].forEach(key => {
+    const val = document.getElementById(`cp-${key}`).value;
+    document.getElementById(`cp-${key}-swatch`).style.background = val;
+  });
+}
+
+function previewCustom() {
+  updateSwatches();
+  // Live preview if already in custom mode
+  if (currentTheme === 'custom') {
+    const c = getPickerValues();
+    applyCustomVars(c);
+  }
+}
+
+function getPickerValues() {
+  return {
+    bg:     document.getElementById('cp-bg').value,
+    accent: document.getElementById('cp-accent').value,
+    card:   document.getElementById('cp-card').value,
+    text:   document.getElementById('cp-text').value,
+  };
+}
+
+function saveCustomTheme() {
+  customColors = getPickerValues();
+  localStorage.setItem('kk_custom_colors', JSON.stringify(customColors));
+  applyTheme('custom');
+  closeModal('modal-custom-theme');
+  showToast('🎨 Eigenes Design gespeichert');
+}
+
 
 /* ── PERSON MANAGEMENT ── */
 function renderPersonBtn() {
@@ -1667,6 +1927,7 @@ function renderAll() {
 (function init() {
   loadState();
   applyTheme(currentTheme);
+  if (currentTheme === 'custom') applyCustomVars(customColors);
   renderAll();
 
   document.getElementById('person-btn').onclick = () => {
@@ -1693,6 +1954,7 @@ function renderAll() {
     setTimeout(() => document.getElementById('photo-input').click(), 200);
   });
   document.getElementById('photo-cancel-btn').addEventListener('click', () => closeModal('modal-photo'));
+  document.getElementById('btn-open-custom-picker').addEventListener('click', openCustomPicker);
 
   // Enter key shortcuts
   document.getElementById('input-new-person').addEventListener('keyup',      e => { if (e.key==='Enter') addPerson(); });
