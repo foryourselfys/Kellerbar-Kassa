@@ -1,1 +1,1260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Kellerbar" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>Kellerbar Kassa</title>
+<style>
+/* ═══════════════════════════════════════
+   KELLERBAR KASSA — styles
+   Industrial-minimal dark tap-app aesthetic
+   ═══════════════════════════════════════ */
 
+:root {
+  --bg:         #0a0a0f;
+  --bg2:        #13131c;
+  --bg3:        #1c1c2a;
+  --border:     #2a2a3d;
+  --accent:     #f5c842;
+  --green:      #3ddc84;
+  --red:        #ff5f57;
+  --text:       #f0f0f5;
+  --text-muted: #7a7a9a;
+  --radius:     16px;
+  --radius-sm:  10px;
+  --tab-h:      72px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:         #f5f5f0;
+    --bg2:        #ffffff;
+    --bg3:        #ebebeb;
+    --border:     #d0d0d0;
+    --text:       #111118;
+    --text-muted: #888898;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── TAB BAR ── */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: calc(var(--tab-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+}
+
+.tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: color .2s;
+  padding-bottom: 4px;
+}
+.tab.active { color: var(--accent); }
+.tab-icon { font-size: 22px; }
+.tab-label { font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+
+/* ── TAB CONTENT ── */
+.tab-content {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px calc(var(--tab-h) + var(--safe-bottom) + 16px);
+  -webkit-overflow-scrolling: touch;
+}
+.tab-content.active { display: block; }
+
+/* ── BALANCE CARD ── */
+.balance-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.balance-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.balance-amount {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.balance-sub {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.income-sum  { color: var(--green); }
+.expense-sum { color: var(--red); }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 8px 2px;
+}
+
+/* ── PERSON BUTTON ── */
+.person-btn {
+  width: 100%;
+  background: var(--bg2);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  padding: 18px 20px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background .15s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.person-btn:active { background: var(--bg3); transform: scale(.98); }
+
+/* ── DRINKS GRID ── */
+.drinks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.drink-btn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 18px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s, transform .1s, background .15s;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.drink-btn:active { transform: scale(.95); background: var(--bg3); border-color: var(--accent); }
+.drink-btn-name  { font-size: 16px; font-weight: 700; }
+.drink-btn-price { font-size: 13px; color: var(--accent); font-weight: 600; }
+
+/* ── ACTION ROW ── */
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.btn-expense {
+  background: var(--red);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn-expense:active { opacity: .8; transform: scale(.97); }
+
+.btn-undo {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 18px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, transform .1s;
+}
+.btn-undo:active { background: var(--bg2); transform: scale(.97); }
+
+/* ── HISTORY ── */
+.history-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.filter-row { display: flex; gap: 8px; }
+.filter-btn {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 4px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+.filter-select, .filter-input {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  -webkit-appearance: none;
+}
+.filter-input::placeholder { color: var(--text-muted); }
+
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+
+.history-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px;
+  align-items: center;
+}
+.history-item-desc { font-size: 15px; font-weight: 600; }
+.history-item-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.history-item-amount { font-size: 18px; font-weight: 800; }
+.history-item-amount.pos { color: var(--green); }
+.history-item-amount.neg { color: var(--red); }
+.history-empty { text-align: center; color: var(--text-muted); font-size: 15px; padding: 40px 0; }
+
+/* ── SETTINGS ── */
+.settings-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.settings-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.drinks-settings-list, .persons-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.settings-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.settings-item-name  { flex: 1; font-size: 15px; font-weight: 600; }
+.settings-item-price { font-size: 13px; color: var(--accent); font-weight: 600; margin-right: 4px; }
+.settings-item-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background .15s;
+}
+.settings-item-btn:active { background: var(--border); }
+
+.btn-add-drink {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-add-drink:active { background: var(--bg); }
+
+.danger-zone .settings-title { color: var(--red); }
+.btn-danger {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--red);
+  border-radius: var(--radius-sm);
+  color: var(--red);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-danger:active { background: rgba(255,95,87,.1); }
+
+/* ── MODALS ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-overlay.open {
+  display: flex;
+  animation: fade-in .2s ease;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px calc(24px + var(--safe-bottom));
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slide-up .25s cubic-bezier(.16,1,.3,1);
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.modal-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 17px;
+  padding: 14px 16px;
+  outline: none;
+  -webkit-appearance: none;
+}
+.modal-input:focus { border-color: var(--accent); }
+.modal-input::placeholder { color: var(--text-muted); }
+
+.btn-primary {
+  width: 100%;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #000;
+  font-size: 17px;
+  font-weight: 800;
+  padding: 16px;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn-primary:active { opacity: .85; transform: scale(.98); }
+
+.btn-secondary {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-secondary:active { background: var(--bg); }
+
+.btn-ghost {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.person-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 40dvh;
+  overflow-y: auto;
+}
+.person-list-btn {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.person-list-btn.selected { border-color: var(--accent); color: var(--accent); }
+.person-list-btn:active { background: var(--bg2); }
+
+.drink-price-display {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 8px 0;
+}
+.qty-btn {
+  width: 56px; height: 56px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, transform .1s;
+}
+.qty-btn:active { background: var(--bg); transform: scale(.9); }
+.qty-display {
+  font-size: 40px;
+  font-weight: 800;
+  min-width: 60px;
+  text-align: center;
+}
+.total-display {
+  text-align: center;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+.total-display strong { color: var(--accent); font-size: 20px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--text);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 40px;
+  z-index: 999;
+  transition: transform .3s cubic-bezier(.16,1,.3,1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+::-webkit-scrollbar { width: 0; }
+
+/* ── APP HEADER ── */
+.app-header {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+  padding: 12px 0 4px;
+  opacity: 0.7;
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast" aria-live="polite"></div>
+
+<!-- APP SHELL -->
+<div id="app">
+
+  <!-- TAB BAR -->
+  <nav class="tabbar">
+    <button class="tab active" data-tab="home" onclick="switchTab('home')">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Kassa</span>
+    </button>
+    <button class="tab" data-tab="history" onclick="switchTab('history')">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">Verlauf</span>
+    </button>
+    <button class="tab" data-tab="settings" onclick="switchTab('settings')">
+      <span class="tab-icon">⚙️</span>
+      <span class="tab-label">Einstellungen</span>
+    </button>
+  </nav>
+
+  <!-- HOME TAB -->
+  <main id="tab-home" class="tab-content active">
+    <div class="app-header">🍺 Kellerbar Kassa</div>
+    <section class="balance-card">
+      <div class="balance-label">Aktueller Stand</div>
+      <div class="balance-amount" id="balance-total">€ 0,00</div>
+      <div class="balance-sub">
+        <span class="income-sum">↑ <span id="total-income">0,00</span></span>
+        <span class="expense-sum">↓ <span id="total-expense">0,00</span></span>
+      </div>
+    </section>
+
+    <div class="section-label">Person</div>
+    <button class="person-btn" id="person-btn">
+      <span id="person-btn-text">👤 Person wählen</span>
+    </button>
+
+    <div class="section-label">Getränke buchen</div>
+    <div class="drinks-grid" id="drinks-grid"></div>
+
+    <div class="action-row">
+      <button class="btn-expense" onclick="openModal('modal-expense')">➖ Ausgabe</button>
+      <button class="btn-undo" onclick="undoLast()">↩ Undo</button>
+    </div>
+  </main>
+
+  <!-- HISTORY TAB -->
+  <main id="tab-history" class="tab-content">
+    <div class="history-filters">
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="setFilter('type','all',this)">Alle</button>
+        <button class="filter-btn" onclick="setFilter('type','income',this)">Einnahmen</button>
+        <button class="filter-btn" onclick="setFilter('type','expense',this)">Ausgaben</button>
+      </div>
+      <div class="filter-row">
+        <select id="filter-person" class="filter-select" onchange="renderHistory()">
+          <option value="all">Alle Personen</option>
+        </select>
+        <input type="search" id="filter-search" class="filter-input" placeholder="🔍 Suche…" oninput="renderHistory()" />
+      </div>
+    </div>
+    <div id="history-list" class="history-list"></div>
+  </main>
+
+  <!-- SETTINGS TAB -->
+  <main id="tab-settings" class="tab-content">
+    <div class="settings-section">
+      <div class="settings-title">Getränke verwalten</div>
+      <div id="drinks-settings-list" class="drinks-settings-list"></div>
+      <button class="btn-add-drink" id="btn-add-drink-settings">＋ Neues Getränk</button>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">Personen verwalten</div>
+      <div id="persons-settings-list" class="persons-settings-list"></div>
+    </div>
+    <div class="settings-section danger-zone">
+      <div class="settings-title">Gefahrenzone</div>
+      <button class="btn-danger" onclick="resetConfirm()">🗑 Alles zurücksetzen</button>
+    </div>
+  </main>
+
+</div>
+
+<!-- MODALS -->
+
+<!-- Person Select -->
+<div id="modal-person-select" class="modal-overlay" onclick="closeModalOnBg(event,'modal-person-select')">
+  <div class="modal">
+    <div class="modal-title">Person wählen</div>
+    <div id="person-list" class="person-list"></div>
+    <button class="btn-secondary" onclick="openModal('modal-add-person')">＋ Neue Person</button>
+    <button class="btn-ghost" onclick="closeModal('modal-person-select')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Add Person -->
+<div id="modal-add-person" class="modal-overlay" onclick="closeModalOnBg(event,'modal-add-person')">
+  <div class="modal">
+    <div class="modal-title">Neue Person</div>
+    <input type="text" id="input-new-person" class="modal-input" placeholder="Name" maxlength="40" />
+    <button class="btn-primary" onclick="addPerson()">Hinzufügen</button>
+    <button class="btn-ghost" onclick="closeModal('modal-add-person')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Drink Booking -->
+<div id="modal-drink" class="modal-overlay" onclick="closeModalOnBg(event,'modal-drink')">
+  <div class="modal">
+    <div class="modal-title" id="drink-modal-name">Getränk</div>
+    <div class="drink-price-display" id="drink-modal-price">€ 0,00</div>
+    <div class="qty-row">
+      <button class="qty-btn" onclick="changeQty(-1)">−</button>
+      <span class="qty-display" id="qty-display">1</span>
+      <button class="qty-btn" onclick="changeQty(+1)">＋</button>
+    </div>
+    <div class="total-display">Gesamt: <strong id="drink-modal-total">€ 0,00</strong></div>
+    <button class="btn-primary" onclick="bookDrink()">✓ Buchen</button>
+    <button class="btn-ghost" onclick="closeModal('modal-drink')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Expense -->
+<div id="modal-expense" class="modal-overlay" onclick="closeModalOnBg(event,'modal-expense')">
+  <div class="modal">
+    <div class="modal-title">Ausgabe</div>
+    <input type="number" id="input-expense-amount" class="modal-input" placeholder="Betrag in € (z.B. 12.50)" min="0.01" step="0.01" />
+    <input type="text" id="input-expense-note" class="modal-input" placeholder="Notiz (optional)" maxlength="80" />
+    <button class="btn-primary" onclick="addExpense()">Speichern</button>
+    <button class="btn-ghost" onclick="closeModal('modal-expense')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Add / Edit Drink -->
+<div id="modal-add-drink" class="modal-overlay" onclick="closeModalOnBg(event,'modal-add-drink')">
+  <div class="modal">
+    <div class="modal-title" id="modal-add-drink-title">Neues Getränk</div>
+    <input type="text" id="input-drink-name" class="modal-input" placeholder="Name" maxlength="40" />
+    <input type="number" id="input-drink-price" class="modal-input" placeholder="Preis in € (z.B. 2.50)" min="0" step="0.10" />
+    <button class="btn-primary" onclick="saveDrink()">Speichern</button>
+    <button class="btn-ghost" onclick="closeModal('modal-add-drink')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Rename Person -->
+<div id="modal-rename-person" class="modal-overlay" onclick="closeModalOnBg(event,'modal-rename-person')">
+  <div class="modal">
+    <div class="modal-title">Person umbenennen</div>
+    <input type="text" id="input-rename-person" class="modal-input" placeholder="Neuer Name" maxlength="40" />
+    <button class="btn-primary" onclick="renamePerson()">Speichern</button>
+    <button class="btn-ghost" onclick="closeModal('modal-rename-person')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Confirm Dialog (ersetzt confirm() für iOS PWA) -->
+<div id="modal-confirm" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="confirm-title">Sicher?</div>
+    <div id="confirm-msg" style="text-align:center;color:var(--text-muted);font-size:15px;line-height:1.5"></div>
+    <button class="btn-danger" id="confirm-ok-btn">Ja, löschen</button>
+    <button class="btn-ghost" id="confirm-cancel-btn">Abbrechen</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ── DATA VERSION & DEFAULTS ── */
+const DATA_VERSION = 'kk_v1';
+
+function uid() {
+  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+}
+
+const DEFAULT_DRINKS = [
+  { id: uid(), name: 'Bier',        price: 2.00 },
+  { id: uid(), name: 'Spritzer',    price: 2.00 },
+  { id: uid(), name: 'Gin Tonic',   price: 3.00 },
+  { id: uid(), name: 'Alkoholfrei', price: 1.00 },
+];
+
+/* ── STATE ── */
+let state = { version: DATA_VERSION, drinks: [], persons: [], bookings: [] };
+
+let currentPerson  = null;
+let currentDrink   = null;
+let currentQty     = 1;
+let editingDrinkId = null;
+let editPersonId   = null;
+let filterType     = 'all';
+
+/* ── UTILITIES ── */
+function fmt(amount) {
+  return '€ ' + Math.abs(amount).toFixed(2).replace('.', ',');
+}
+function fmtSigned(amount) {
+  return (amount >= 0 ? '+' : '−') + ' ' + fmt(amount);
+}
+function fmtDate(ts) {
+  const d = new Date(ts);
+  return String(d.getDate()).padStart(2,'0') + '.' +
+         String(d.getMonth()+1).padStart(2,'0') + '. ' +
+         String(d.getHours()).padStart(2,'0') + ':' +
+         String(d.getMinutes()).padStart(2,'0');
+}
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── STORAGE ── */
+function loadState() {
+  try {
+    const raw = localStorage.getItem(DATA_VERSION);
+    if (raw) {
+      state = JSON.parse(raw);
+      state.drinks   = state.drinks   || [];
+      state.persons  = state.persons  || [];
+      state.bookings = state.bookings || [];
+    } else {
+      state.drinks = DEFAULT_DRINKS.map(d => ({ ...d }));
+    }
+  } catch(e) { console.error('loadState', e); }
+}
+function saveState() {
+  try { localStorage.setItem(DATA_VERSION, JSON.stringify(state)); } catch(e) {}
+}
+
+/* ── MODAL HELPERS ── */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalOnBg(e, id) { if (e.target.id === id) closeModal(id); }
+
+/* ── TOAST ── */
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* ── TAB SWITCHING ── */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+  if (tab === 'history')  renderHistory();
+  if (tab === 'settings') renderSettings();
+}
+
+/* ── PERSON MANAGEMENT ── */
+function renderPersonBtn() {
+  document.getElementById('person-btn-text').textContent =
+    currentPerson ? '👤 ' + currentPerson.name : '👤 Person wählen';
+}
+
+function renderPersonListModal() {
+  const list = document.getElementById('person-list');
+  list.innerHTML = '';
+  if (state.persons.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:16px">Noch keine Personen.</div>';
+    return;
+  }
+  state.persons.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'person-list-btn' + (currentPerson?.id === p.id ? ' selected' : '');
+    btn.textContent = p.name;
+    btn.onclick = () => {
+      currentPerson = { id: p.id, name: p.name };
+      renderPersonBtn();
+      closeModal('modal-person-select');
+      showToast('👤 ' + p.name);
+    };
+    list.appendChild(btn);
+  });
+}
+
+function addPerson() {
+  const input = document.getElementById('input-new-person');
+  const name = input.value.trim();
+  if (!name) { showToast('⚠️ Name eingeben'); return; }
+  if (state.persons.find(p => p.name.toLowerCase() === name.toLowerCase())) {
+    showToast('⚠️ Name bereits vorhanden'); return;
+  }
+  const person = { id: uid(), name };
+  state.persons.push(person);
+  saveState();
+  input.value = '';
+  currentPerson = { id: person.id, name: person.name };
+  renderPersonBtn();
+  closeModal('modal-add-person');
+  renderPersonListModal();
+  openModal('modal-person-select');
+  showToast('✓ ' + name + ' hinzugefügt');
+}
+
+/* ── DRINKS ── */
+function renderDrinksGrid() {
+  const grid = document.getElementById('drinks-grid');
+  grid.innerHTML = '';
+  state.drinks.forEach(drink => {
+    const btn = document.createElement('button');
+    btn.className = 'drink-btn';
+    btn.innerHTML = `<span class="drink-btn-name">${escHtml(drink.name)}</span>
+                     <span class="drink-btn-price">${fmt(drink.price)}</span>`;
+    btn.onclick = () => openDrinkModal(drink);
+    grid.appendChild(btn);
+  });
+}
+
+function openDrinkModal(drink) {
+  if (!currentPerson) {
+    showToast('⚠️ Zuerst Person wählen!');
+    renderPersonListModal();
+    openModal('modal-person-select');
+    return;
+  }
+  currentDrink = { id: drink.id, name: drink.name, price: drink.price };
+  currentQty = 1;
+  document.getElementById('drink-modal-name').textContent  = drink.name;
+  document.getElementById('drink-modal-price').textContent = fmt(drink.price);
+  updateDrinkModalTotal();
+  openModal('modal-drink');
+}
+
+function changeQty(delta) {
+  currentQty = Math.max(1, currentQty + delta);
+  updateDrinkModalTotal();
+}
+
+function updateDrinkModalTotal() {
+  document.getElementById('qty-display').textContent = currentQty;
+  const total = currentDrink ? currentDrink.price * currentQty : 0;
+  document.getElementById('drink-modal-total').textContent = fmt(total);
+}
+
+function bookDrink() {
+  if (!currentDrink || !currentPerson) return;
+  state.bookings.unshift({
+    id: uid(), timestamp: Date.now(),
+    person_id: currentPerson.id, person_name: currentPerson.name,
+    type: 'income',
+    item_name: currentDrink.name, qty: currentQty, unit_price: currentDrink.price,
+    amount_total: +(currentDrink.price * currentQty).toFixed(2),
+  });
+  saveState();
+  closeModal('modal-drink');
+  renderDrinksGrid();
+  updateBalance();
+  showToast(`✓ ${currentDrink.name} × ${currentQty} gebucht`);
+}
+
+/* ── EXPENSES ── */
+function addExpense() {
+  if (!currentPerson) {
+    showToast('⚠️ Zuerst Person wählen!');
+    closeModal('modal-expense');
+    renderPersonListModal();
+    openModal('modal-person-select');
+    return;
+  }
+  const amtRaw = parseFloat(document.getElementById('input-expense-amount').value.replace(',', '.'));
+  if (!amtRaw || amtRaw <= 0 || isNaN(amtRaw)) { showToast('⚠️ Gültigen Betrag eingeben'); return; }
+  const note = document.getElementById('input-expense-note').value.trim();
+  state.bookings.unshift({
+    id: uid(), timestamp: Date.now(),
+    person_id: currentPerson.id, person_name: currentPerson.name,
+    type: 'expense', note: note || '',
+    amount_total: -(+amtRaw.toFixed(2)),
+  });
+  saveState();
+  document.getElementById('input-expense-amount').value = '';
+  document.getElementById('input-expense-note').value   = '';
+  closeModal('modal-expense');
+  updateBalance();
+  showToast('✓ Ausgabe gespeichert');
+}
+
+/* ── BALANCE ── */
+function updateBalance() {
+  const income  = state.bookings.filter(b => b.type === 'income').reduce((s,b) => s + b.amount_total, 0);
+  const expense = state.bookings.filter(b => b.type === 'expense').reduce((s,b) => s + b.amount_total, 0);
+  const total   = income + expense;
+  const el = document.getElementById('balance-total');
+  el.textContent   = fmt(total);
+  el.style.color   = total < 0 ? 'var(--red)' : 'var(--accent)';
+  document.getElementById('total-income').textContent  = income.toFixed(2).replace('.', ',');
+  document.getElementById('total-expense').textContent = Math.abs(expense).toFixed(2).replace('.', ',');
+}
+
+/* ── UNDO ── */
+function undoLast() {
+  if (state.bookings.length === 0) { showToast('Kein Eintrag zum Rückgängigmachen'); return; }
+  const last = state.bookings.shift();
+  saveState();
+  updateBalance();
+  showToast(last.type === 'income'
+    ? `↩ ${last.item_name} × ${last.qty} rückgängig`
+    : `↩ Ausgabe rückgängig`);
+}
+
+/* ── HISTORY ── */
+function setFilter(category, value, btn) {
+  filterType = value;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistory();
+}
+
+function renderHistory() {
+  updatePersonFilterSelect();
+  const personFilter = document.getElementById('filter-person')?.value || 'all';
+  const searchQuery  = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
+  const list = document.getElementById('history-list');
+  list.innerHTML = '';
+  let items = [...state.bookings];
+  if (filterType !== 'all')   items = items.filter(b => b.type === filterType);
+  if (personFilter !== 'all') items = items.filter(b => b.person_id === personFilter);
+  if (searchQuery) {
+    items = items.filter(b =>
+      (b.item_name || '').toLowerCase().includes(searchQuery) ||
+      (b.note      || '').toLowerCase().includes(searchQuery)
+    );
+  }
+  if (items.length === 0) {
+    list.innerHTML = '<div class="history-empty">Keine Einträge gefunden.</div>';
+    return;
+  }
+  items.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    const desc = b.type === 'income'
+      ? `${escHtml(b.item_name)} × ${b.qty}`
+      : `Ausgabe${b.note ? ': ' + escHtml(b.note) : ''}`;
+    div.innerHTML = `
+      <div>
+        <div class="history-item-desc">${desc}</div>
+        <div class="history-item-meta">${fmtDate(b.timestamp)} · ${escHtml(b.person_name)}</div>
+      </div>
+      <div class="history-item-amount ${b.amount_total >= 0 ? 'pos' : 'neg'}">${fmtSigned(b.amount_total)}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function updatePersonFilterSelect() {
+  const sel = document.getElementById('filter-person');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="all">Alle Personen</option>';
+  state.persons.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id; opt.textContent = p.name;
+    if (p.id === current) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  [...new Set(state.bookings.map(b => b.person_id))].forEach(pid => {
+    if (!state.persons.find(p => p.id === pid)) {
+      const name = state.bookings.find(b => b.person_id === pid)?.person_name || pid;
+      const opt = document.createElement('option');
+      opt.value = pid; opt.textContent = name + ' (gelöscht)';
+      if (pid === current) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+/* ── SETTINGS – DRINKS ── */
+function openModal_AddDrink() {
+  editingDrinkId = null;
+  document.getElementById('modal-add-drink-title').textContent = 'Neues Getränk';
+  document.getElementById('input-drink-name').value  = '';
+  document.getElementById('input-drink-price').value = '';
+  openModal('modal-add-drink');
+}
+
+function openModal_EditDrink(drinkId) {
+  editingDrinkId = drinkId;
+  const drink = state.drinks.find(d => d.id === drinkId);
+  if (!drink) return;
+  document.getElementById('modal-add-drink-title').textContent = 'Getränk bearbeiten';
+  document.getElementById('input-drink-name').value  = drink.name;
+  document.getElementById('input-drink-price').value = drink.price.toFixed(2);
+  openModal('modal-add-drink');
+}
+
+function saveDrink() {
+  const name  = document.getElementById('input-drink-name').value.trim();
+  const price = parseFloat(document.getElementById('input-drink-price').value.replace(',', '.'));
+  if (!name)                   { showToast('⚠️ Name eingeben'); return; }
+  if (isNaN(price) || price < 0) { showToast('⚠️ Gültigen Preis eingeben'); return; }
+  if (editingDrinkId) {
+    const idx = state.drinks.findIndex(d => d.id === editingDrinkId);
+    if (idx !== -1) { state.drinks[idx].name = name; state.drinks[idx].price = +price.toFixed(2); }
+    showToast('✓ Getränk aktualisiert');
+  } else {
+    state.drinks.push({ id: uid(), name, price: +price.toFixed(2) });
+    showToast('✓ Getränk hinzugefügt');
+  }
+  saveState();
+  closeModal('modal-add-drink');
+  renderDrinksGrid();
+  renderSettings();
+}
+
+/* ── CONFIRM MODAL (iOS PWA-safe, kein confirm()) ── */
+function showConfirm(title, msg, okLabel, onOk) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent   = msg;
+  document.getElementById('confirm-ok-btn').textContent = okLabel || 'Ja, löschen';
+  openModal('modal-confirm');
+  // Einmalige Listener — nach Klick sofort entfernen
+  const okBtn     = document.getElementById('confirm-ok-btn');
+  const cancelBtn = document.getElementById('confirm-cancel-btn');
+  function doOk() {
+    cleanup();
+    closeModal('modal-confirm');
+    onOk();
+  }
+  function doCancel() {
+    cleanup();
+    closeModal('modal-confirm');
+  }
+  function cleanup() {
+    okBtn.removeEventListener('click', doOk);
+    cancelBtn.removeEventListener('click', doCancel);
+  }
+  okBtn.addEventListener('click', doOk);
+  cancelBtn.addEventListener('click', doCancel);
+}
+
+function deleteDrink(drinkId) {
+  const drink = state.drinks.find(d => d.id === drinkId);
+  if (!drink) return;
+  showConfirm(
+    '🗑 Getränk löschen',
+    `„${drink.name}" wirklich löschen? Alte Buchungen bleiben erhalten.`,
+    'Ja, löschen',
+    () => {
+      state.drinks = state.drinks.filter(d => d.id !== drinkId);
+      saveState();
+      renderDrinksGrid();
+      renderSettings();
+      showToast('🗑 Getränk gelöscht');
+    }
+  );
+}
+
+/* ── SETTINGS – PERSONS ── */
+function openModal_RenamePerson(personId) {
+  editPersonId = personId;
+  const p = state.persons.find(x => x.id === personId);
+  if (!p) return;
+  document.getElementById('input-rename-person').value = p.name;
+  openModal('modal-rename-person');
+}
+
+function renamePerson() {
+  const name = document.getElementById('input-rename-person').value.trim();
+  if (!name) { showToast('⚠️ Name eingeben'); return; }
+  const idx = state.persons.findIndex(p => p.id === editPersonId);
+  if (idx === -1) return;
+  state.persons[idx].name = name;
+  if (currentPerson?.id === editPersonId) { currentPerson.name = name; renderPersonBtn(); }
+  saveState();
+  closeModal('modal-rename-person');
+  renderSettings();
+  showToast('✓ Umbenannt');
+}
+
+function deletePerson(personId) {
+  const p = state.persons.find(x => x.id === personId);
+  if (!p) return;
+  showConfirm(
+    '🗑 Person löschen',
+    `„${p.name}" wirklich löschen? Buchungen bleiben erhalten.`,
+    'Ja, löschen',
+    () => {
+      state.persons = state.persons.filter(x => x.id !== personId);
+      if (currentPerson?.id === personId) { currentPerson = null; renderPersonBtn(); }
+      saveState();
+      renderSettings();
+      showToast('🗑 Person gelöscht');
+    }
+  );
+}
+
+/* ── SETTINGS RENDER ── */
+function renderSettings() {
+  const dl = document.getElementById('drinks-settings-list');
+  dl.innerHTML = '';
+  state.drinks.forEach(drink => {
+    const item = document.createElement('div');
+    item.className = 'settings-item';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'settings-item-name';
+    nameSpan.textContent = drink.name;
+
+    const priceSpan = document.createElement('span');
+    priceSpan.className = 'settings-item-price';
+    priceSpan.textContent = fmt(drink.price);
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'settings-item-btn';
+    editBtn.title = 'Bearbeiten';
+    editBtn.textContent = '✏️';
+    editBtn.addEventListener('click', () => openModal_EditDrink(drink.id));
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'settings-item-btn';
+    delBtn.title = 'Löschen';
+    delBtn.textContent = '🗑';
+    delBtn.addEventListener('click', () => deleteDrink(drink.id));
+
+    item.appendChild(nameSpan);
+    item.appendChild(priceSpan);
+    item.appendChild(editBtn);
+    item.appendChild(delBtn);
+    dl.appendChild(item);
+  });
+
+  const pl = document.getElementById('persons-settings-list');
+  pl.innerHTML = '';
+  if (state.persons.length === 0) {
+    pl.innerHTML = '<div style="color:var(--text-muted);font-size:14px;text-align:center;padding:8px">Noch keine Personen</div>';
+  }
+  state.persons.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'settings-item';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'settings-item-name';
+    nameSpan.textContent = p.name;
+
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'settings-item-btn';
+    renameBtn.title = 'Umbenennen';
+    renameBtn.textContent = '✏️';
+    renameBtn.addEventListener('click', () => openModal_RenamePerson(p.id));
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'settings-item-btn';
+    delBtn.title = 'Löschen';
+    delBtn.textContent = '🗑';
+    delBtn.addEventListener('click', () => deletePerson(p.id));
+
+    item.appendChild(nameSpan);
+    item.appendChild(renameBtn);
+    item.appendChild(delBtn);
+    pl.appendChild(item);
+  });
+}
+
+/* ── RESET ── */
+function resetConfirm() {
+  showConfirm(
+    '⚠️ Alles zurücksetzen?',
+    'Alle Buchungen, Personen und Getränke werden unwiderruflich gelöscht.',
+    'Ja, weiter',
+    () => {
+      showConfirm(
+        '⚠️ Wirklich sicher?',
+        'Das kann nicht rückgängig gemacht werden. Wirklich alles löschen?',
+        '✓ Ja, alles löschen',
+        () => {
+          localStorage.removeItem(DATA_VERSION);
+          state = { version: DATA_VERSION, drinks: DEFAULT_DRINKS.map(d => ({...d, id: uid()})), persons: [], bookings: [] };
+          saveState();
+          currentPerson = null;
+          renderAll();
+          showToast('🗑 Alles zurückgesetzt');
+        }
+      );
+    }
+  );
+}
+
+/* ── RENDER ALL ── */
+function renderAll() {
+  renderPersonBtn();
+  renderDrinksGrid();
+  updateBalance();
+  renderSettings();
+}
+
+/* ── BOOT ── */
+(function init() {
+  loadState();
+  renderAll();
+
+  document.getElementById('person-btn').onclick = () => {
+    renderPersonListModal();
+    openModal('modal-person-select');
+  };
+
+  document.getElementById('btn-add-drink-settings').onclick = openModal_AddDrink;
+
+  // Enter key shortcuts
+  document.getElementById('input-new-person').addEventListener('keyup',      e => { if (e.key==='Enter') addPerson(); });
+  document.getElementById('input-drink-name').addEventListener('keyup',      e => { if (e.key==='Enter') saveDrink(); });
+  document.getElementById('input-drink-price').addEventListener('keyup',     e => { if (e.key==='Enter') saveDrink(); });
+  document.getElementById('input-rename-person').addEventListener('keyup',   e => { if (e.key==='Enter') renamePerson(); });
+  document.getElementById('input-expense-amount').addEventListener('keyup',  e => { if (e.key==='Enter') addExpense(); });
+})();
+</script>
+</body>
+</html>
