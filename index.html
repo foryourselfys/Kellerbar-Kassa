@@ -63,7 +63,7 @@ html, body {
   position: relative;
 }
 
-/* ── TAB BAR ── */
+/* ── TAB BAR — Classic ── */
 .tabbar {
   position: fixed;
   bottom: 0;
@@ -92,9 +92,11 @@ html, body {
   cursor: pointer;
   transition: color .2s;
   padding-bottom: 4px;
+  -webkit-tap-highlight-color: transparent;
 }
 .tab.active { color: var(--accent); }
-.tab-icon { font-size: 22px; }
+.tab:active { opacity: .7; }
+.tab-icon  { font-size: 22px; }
 .tab-label { font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
 
 /* ── TAB CONTENT ── */
@@ -106,6 +108,121 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 .tab-content.active { display: block; }
+
+/* ══════════════════════════════════════
+   DESIGN THEMES
+   Applied via data-theme on <body>
+   ══════════════════════════════════════ */
+
+/* Theme: Neon Purple */
+body[data-theme="neon"] {
+  --bg:         #0d0d1a;
+  --bg2:        #15152b;
+  --bg3:        #1e1e38;
+  --border:     #2e2e52;
+  --accent:     #c084fc;
+  --green:      #4ade80;
+  --red:        #f87171;
+  --text:       #f0f0ff;
+  --text-muted: #7070aa;
+}
+
+/* Theme: Emerald */
+body[data-theme="emerald"] {
+  --bg:         #051a0f;
+  --bg2:        #0a2318;
+  --bg3:        #112e20;
+  --border:     #1a4530;
+  --accent:     #34d399;
+  --green:      #6ee7b7;
+  --red:        #f87171;
+  --text:       #ecfdf5;
+  --text-muted: #5a8a70;
+}
+
+/* Theme: Sunrise */
+body[data-theme="sunrise"] {
+  --bg:         #1a0a00;
+  --bg2:        #241200;
+  --bg3:        #301a00;
+  --border:     #4a2800;
+  --accent:     #fb923c;
+  --green:      #4ade80;
+  --red:        #f87171;
+  --text:       #fff7ed;
+  --text-muted: #8a6040;
+}
+
+/* Theme: Light Minimal */
+body[data-theme="light"] {
+  --bg:         #f5f5f0;
+  --bg2:        #ffffff;
+  --bg3:        #ebebeb;
+  --border:     #d0d0d0;
+  --accent:     #1d4ed8;
+  --green:      #16a34a;
+  --red:        #dc2626;
+  --text:       #111118;
+  --text-muted: #888898;
+}
+
+/* Theme: Ice */
+body[data-theme="ice"] {
+  --bg:         #060d1a;
+  --bg2:        #0c1728;
+  --bg3:        #132035;
+  --border:     #1e3050;
+  --accent:     #38bdf8;
+  --green:      #34d399;
+  --red:        #f87171;
+  --text:       #e0f2fe;
+  --text-muted: #5080a0;
+}
+
+/* ── DESIGN PICKER MODAL ── */
+.theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.theme-btn {
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  padding: 14px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: border-color .15s, transform .1s;
+  position: relative;
+  overflow: hidden;
+}
+.theme-btn:active { transform: scale(.96); }
+.theme-btn.active-theme { border-color: white; }
+.theme-btn.active-theme::after {
+  content: '✓';
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,.5);
+}
+.theme-swatch {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.3);
+  flex-shrink: 0;
+}
+.theme-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,.6);
+}
 
 /* ── BALANCE CARD ── */
 .balance-card {
@@ -725,6 +842,10 @@ html, body {
       <div class="settings-title">Gefahrenzone</div>
       <button class="btn-danger" onclick="resetConfirm()">🗑 Alles zurücksetzen</button>
     </div>
+    <div class="settings-section">
+      <div class="settings-title">Design</div>
+      <button class="btn-secondary" onclick="openModal('modal-theme')" style="font-size:15px;padding:14px">🎨 Design ändern</button>
+    </div>
   </main>
 
 </div>
@@ -824,6 +945,15 @@ html, body {
   </div>
 </div>
 
+<!-- Theme Picker -->
+<div id="modal-theme" class="modal-overlay" onclick="closeModalOnBg(event,'modal-theme')">
+  <div class="modal">
+    <div class="modal-title">🎨 Design wählen</div>
+    <div class="theme-grid" id="theme-grid"></div>
+    <button class="btn-ghost" onclick="closeModal('modal-theme')">Schließen</button>
+  </div>
+</div>
+
 <script>
 'use strict';
 
@@ -909,7 +1039,81 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
   if (tab === 'history')  renderHistory();
-  if (tab === 'settings') renderSettings();
+  if (tab === 'settings') { renderSettings(); renderThemeGrid(); }
+}
+
+/* ── THEME SYSTEM ── */
+const THEMES = [
+  {
+    id: 'default',
+    name: 'Keller',
+    bg: '#0a0a0f',
+    accent: '#f5c842',
+    gradient: 'linear-gradient(135deg, #0a0a0f 0%, #1c1c2a 100%)',
+  },
+  {
+    id: 'neon',
+    name: 'Neon',
+    bg: '#0d0d1a',
+    accent: '#c084fc',
+    gradient: 'linear-gradient(135deg, #0d0d1a 0%, #1e1e38 100%)',
+  },
+  {
+    id: 'emerald',
+    name: 'Emerald',
+    bg: '#051a0f',
+    accent: '#34d399',
+    gradient: 'linear-gradient(135deg, #051a0f 0%, #112e20 100%)',
+  },
+  {
+    id: 'sunrise',
+    name: 'Sunrise',
+    bg: '#1a0a00',
+    accent: '#fb923c',
+    gradient: 'linear-gradient(135deg, #1a0a00 0%, #301a00 100%)',
+  },
+  {
+    id: 'light',
+    name: 'Hell',
+    bg: '#f5f5f0',
+    accent: '#1d4ed8',
+    gradient: 'linear-gradient(135deg, #e8e8e0 0%, #ffffff 100%)',
+  },
+  {
+    id: 'ice',
+    name: 'Ice',
+    bg: '#060d1a',
+    accent: '#38bdf8',
+    gradient: 'linear-gradient(135deg, #060d1a 0%, #132035 100%)',
+  },
+];
+
+let currentTheme = localStorage.getItem('kk_theme') || 'default';
+
+function applyTheme(id) {
+  currentTheme = id;
+  document.body.dataset.theme = id === 'default' ? '' : id;
+  localStorage.setItem('kk_theme', id);
+  renderThemeGrid();
+}
+
+function renderThemeGrid() {
+  const grid = document.getElementById('theme-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  THEMES.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'theme-btn' + (currentTheme === t.id ? ' active-theme' : '');
+    btn.style.background = t.gradient;
+    btn.innerHTML = `
+      <div class="theme-swatch" style="background:${t.accent}"></div>
+      <div class="theme-name">${t.name}</div>`;
+    btn.addEventListener('click', () => {
+      applyTheme(t.id);
+      showToast('🎨 ' + t.name);
+    });
+    grid.appendChild(btn);
+  });
 }
 
 /* ── PERSON MANAGEMENT ── */
@@ -1462,6 +1666,7 @@ function renderAll() {
 /* ── BOOT ── */
 (function init() {
   loadState();
+  applyTheme(currentTheme);
   renderAll();
 
   document.getElementById('person-btn').onclick = () => {
