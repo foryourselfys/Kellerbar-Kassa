@@ -269,16 +269,6 @@ html, body {
 
 .history-list { display: flex; flex-direction: column; gap: 8px; }
 
-.history-item {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 4px;
-  align-items: center;
-}
 .history-item-desc { font-size: 15px; font-weight: 600; }
 .history-item-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 .history-item-amount { font-size: 18px; font-weight: 800; }
@@ -458,21 +448,6 @@ html, body {
   max-height: 40dvh;
   overflow-y: auto;
 }
-.person-list-btn {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-size: 17px;
-  font-weight: 600;
-  padding: 16px;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-}
-.person-list-btn.selected { border-color: var(--accent); color: var(--accent); }
-.person-list-btn:active { background: var(--bg2); }
 
 .drink-price-display {
   text-align: center;
@@ -538,6 +513,126 @@ html, body {
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+  padding: 12px 0 4px;
+  opacity: 0.7;
+}
+
+/* ── AVATAR ── */
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  overflow: hidden;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* Person-btn with avatar */
+.person-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+}
+.person-btn-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  flex-shrink: 0;
+}
+.person-btn-avatar.placeholder { font-size: 22px; background: var(--bg3); display:flex; align-items:center; justify-content:center; }
+
+/* Person list btn with avatar */
+.person-list-btn {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.person-list-btn.selected { border-color: var(--accent); color: var(--accent); }
+.person-list-btn:active { background: var(--bg2); }
+.person-list-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  overflow: hidden;
+}
+.person-list-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+/* History item with avatar */
+.history-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+.history-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  overflow: hidden;
+}
+.history-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+/* Settings item with avatar */
+.settings-person-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: border-color .2s;
+}
+.settings-person-avatar:hover { border-color: var(--accent); }
+.settings-person-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.settings-person-avatar .cam-overlay {
+  position: absolute; inset:0; background: rgba(0,0,0,.45);
+  display: flex; align-items:center; justify-content:center;
+  border-radius: 50%; opacity: 0; transition: opacity .2s;
+  font-size: 14px;
+}
+.settings-person-avatar:hover .cam-overlay,
+.settings-person-avatar:active .cam-overlay { opacity: 1; }
+
   text-transform: uppercase;
   color: var(--accent);
   text-align: center;
@@ -624,6 +719,7 @@ html, body {
     <div class="settings-section">
       <div class="settings-title">Personen verwalten</div>
       <div id="persons-settings-list" class="persons-settings-list"></div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;padding: 0 0 4px">Auf das Foto-Symbol tippen um ein Bild aufzunehmen 📷</div>
     </div>
     <div class="settings-section danger-zone">
       <div class="settings-title">Gefahrenzone</div>
@@ -710,6 +806,21 @@ html, body {
     <div id="confirm-msg" style="text-align:center;color:var(--text-muted);font-size:15px;line-height:1.5"></div>
     <button class="btn-danger" id="confirm-ok-btn">Ja, löschen</button>
     <button class="btn-ghost" id="confirm-cancel-btn">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Hidden file input for photo capture -->
+<input type="file" id="photo-input" accept="image/*" style="display:none" />
+
+<!-- Photo preview / crop modal -->
+<div id="modal-photo" class="modal-overlay">
+  <div class="modal" style="align-items:center">
+    <div class="modal-title">Profilbild</div>
+    <canvas id="photo-canvas" style="display:none"></canvas>
+    <img id="photo-preview" src="" alt="" style="width:160px;height:160px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);margin:0 auto;display:block" />
+    <button class="btn-primary" id="photo-save-btn">✓ Speichern</button>
+    <button class="btn-secondary" id="photo-retake-btn">📷 Neu aufnehmen</button>
+    <button class="btn-ghost" id="photo-cancel-btn">Abbrechen</button>
   </div>
 </div>
 
@@ -803,8 +914,19 @@ function switchTab(tab) {
 
 /* ── PERSON MANAGEMENT ── */
 function renderPersonBtn() {
-  document.getElementById('person-btn-text').textContent =
-    currentPerson ? '👤 ' + currentPerson.name : '👤 Person wählen';
+  const btn = document.getElementById('person-btn');
+  if (currentPerson) {
+    const p = state.persons.find(x => x.id === currentPerson.id);
+    const photo = p?.photo || null;
+    btn.innerHTML = `<div class="person-btn-inner">
+      ${photo
+        ? `<img class="person-btn-avatar" src="${photo}" alt="" />`
+        : `<div class="person-btn-avatar placeholder">👤</div>`}
+      <span>${escHtml(currentPerson.name)}</span>
+    </div>`;
+  } else {
+    btn.innerHTML = `<span id="person-btn-text">👤 Person wählen</span>`;
+  }
 }
 
 function renderPersonListModal() {
@@ -817,7 +939,22 @@ function renderPersonListModal() {
   state.persons.forEach(p => {
     const btn = document.createElement('button');
     btn.className = 'person-list-btn' + (currentPerson?.id === p.id ? ' selected' : '');
-    btn.textContent = p.name;
+
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'person-list-avatar';
+    if (p.photo) {
+      const img = document.createElement('img');
+      img.src = p.photo;
+      avatarDiv.appendChild(img);
+    } else {
+      avatarDiv.textContent = '👤';
+    }
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = p.name;
+
+    btn.appendChild(avatarDiv);
+    btn.appendChild(nameSpan);
     btn.onclick = () => {
       currentPerson = { id: p.id, name: p.name };
       renderPersonBtn();
@@ -982,15 +1119,34 @@ function renderHistory() {
   items.forEach(b => {
     const div = document.createElement('div');
     div.className = 'history-item';
+
+    // Avatar
+    const p = state.persons.find(x => x.id === b.person_id);
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'history-avatar';
+    if (p?.photo) {
+      const img = document.createElement('img');
+      img.src = p.photo;
+      avatarDiv.appendChild(img);
+    } else {
+      avatarDiv.textContent = '👤';
+    }
+
     const desc = b.type === 'income'
       ? `${escHtml(b.item_name)} × ${b.qty}`
       : `Ausgabe${b.note ? ': ' + escHtml(b.note) : ''}`;
-    div.innerHTML = `
-      <div>
-        <div class="history-item-desc">${desc}</div>
-        <div class="history-item-meta">${fmtDate(b.timestamp)} · ${escHtml(b.person_name)}</div>
-      </div>
-      <div class="history-item-amount ${b.amount_total >= 0 ? 'pos' : 'neg'}">${fmtSigned(b.amount_total)}</div>`;
+
+    const infoDiv = document.createElement('div');
+    infoDiv.innerHTML = `<div class="history-item-desc">${desc}</div>
+      <div class="history-item-meta">${fmtDate(b.timestamp)} · ${escHtml(b.person_name)}</div>`;
+
+    const amtDiv = document.createElement('div');
+    amtDiv.className = 'history-item-amount ' + (b.amount_total >= 0 ? 'pos' : 'neg');
+    amtDiv.textContent = fmtSigned(b.amount_total);
+
+    div.appendChild(avatarDiv);
+    div.appendChild(infoDiv);
+    div.appendChild(amtDiv);
     list.appendChild(div);
   });
 }
@@ -1181,6 +1337,23 @@ function renderSettings() {
     const item = document.createElement('div');
     item.className = 'settings-item';
 
+    // Tappable avatar
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'settings-person-avatar';
+    if (p.photo) {
+      const img = document.createElement('img');
+      img.src = p.photo;
+      avatarDiv.appendChild(img);
+    } else {
+      avatarDiv.textContent = '👤';
+    }
+    const camOverlay = document.createElement('div');
+    camOverlay.className = 'cam-overlay';
+    camOverlay.textContent = '📷';
+    avatarDiv.appendChild(camOverlay);
+    avatarDiv.title = 'Foto aufnehmen';
+    avatarDiv.addEventListener('click', () => triggerPhoto(p.id));
+
     const nameSpan = document.createElement('span');
     nameSpan.className = 'settings-item-name';
     nameSpan.textContent = p.name;
@@ -1197,6 +1370,7 @@ function renderSettings() {
     delBtn.textContent = '🗑';
     delBtn.addEventListener('click', () => deletePerson(p.id));
 
+    item.appendChild(avatarDiv);
     item.appendChild(nameSpan);
     item.appendChild(renameBtn);
     item.appendChild(delBtn);
@@ -1228,6 +1402,55 @@ function resetConfirm() {
   );
 }
 
+/* ── FOTO / PROFILBILD ── */
+let photoTargetPersonId = null;
+
+function triggerPhoto(personId) {
+  photoTargetPersonId = personId;
+  document.getElementById('photo-input').value = '';
+  document.getElementById('photo-input').click();
+}
+
+function handlePhotoSelected(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const originalDataUrl = e.target.result;
+    // Compress to max 220×220 JPEG, quality 0.75 → keeps size tiny
+    const img = new Image();
+    img.onload = () => {
+      const SIZE = 220;
+      const canvas = document.getElementById('photo-canvas');
+      const ctx = canvas.getContext('2d');
+      // Center-crop to square
+      const side = Math.min(img.width, img.height);
+      const sx = (img.width  - side) / 2;
+      const sy = (img.height - side) / 2;
+      canvas.width  = SIZE;
+      canvas.height = SIZE;
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, SIZE, SIZE);
+      const compressed = canvas.toDataURL('image/jpeg', 0.75);
+      // Show preview
+      document.getElementById('photo-preview').src = compressed;
+      openModal('modal-photo');
+    };
+    img.src = originalDataUrl;
+  };
+  reader.readAsDataURL(file);
+}
+
+function savePhoto(dataUrl) {
+  const idx = state.persons.findIndex(p => p.id === photoTargetPersonId);
+  if (idx === -1) return;
+  state.persons[idx].photo = dataUrl;
+  saveState();
+  // Update currentPerson display if that's who we edited
+  if (currentPerson?.id === photoTargetPersonId) renderPersonBtn();
+  renderSettings();
+  closeModal('modal-photo');
+  showToast('📷 Foto gespeichert');
+}
+
 /* ── RENDER ALL ── */
 function renderAll() {
   renderPersonBtn();
@@ -1247,6 +1470,24 @@ function renderAll() {
   };
 
   document.getElementById('btn-add-drink-settings').onclick = openModal_AddDrink;
+
+  // Photo input
+  const photoInput = document.getElementById('photo-input');
+  photoInput.addEventListener('change', () => {
+    if (photoInput.files && photoInput.files[0]) {
+      handlePhotoSelected(photoInput.files[0]);
+    }
+  });
+  document.getElementById('photo-save-btn').addEventListener('click', () => {
+    const src = document.getElementById('photo-preview').src;
+    if (src) savePhoto(src);
+  });
+  document.getElementById('photo-retake-btn').addEventListener('click', () => {
+    closeModal('modal-photo');
+    // small delay so modal closes before camera opens
+    setTimeout(() => document.getElementById('photo-input').click(), 200);
+  });
+  document.getElementById('photo-cancel-btn').addEventListener('click', () => closeModal('modal-photo'));
 
   // Enter key shortcuts
   document.getElementById('input-new-person').addEventListener('keyup',      e => { if (e.key==='Enter') addPerson(); });
